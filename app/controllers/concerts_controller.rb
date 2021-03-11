@@ -1,9 +1,9 @@
 class ConcertsController < ApplicationController
   before_action :set_concert, only: %i[ show edit update destroy ]
-
+  before_action :set_band, only: %i[ index show new edit update ]
   # GET /concerts or /concerts.json
   def index
-    @concerts = Concert.all
+    @concerts = @band.concerts
   end
 
   # GET /concerts/1 or /concerts/1.json
@@ -38,7 +38,7 @@ class ConcertsController < ApplicationController
   def update
     respond_to do |format|
       if @concert.update(concert_params)
-        format.html { redirect_to @concert, notice: "Concert was successfully updated." }
+        format.html { redirect_to band_concert_path(@band, @concert), notice: "Concert was successfully updated." }
         format.json { render :show, status: :ok, location: @concert }
       else
         format.html { render :edit, status: :unprocessable_entity }
@@ -61,6 +61,11 @@ class ConcertsController < ApplicationController
     def set_concert
       @concert = Concert.find(params[:id])
     end
+
+    def set_band
+      @band = Band.find(params[:band_id])
+
+    end 
 
     # Only allow a list of trusted parameters through.
     def concert_params
